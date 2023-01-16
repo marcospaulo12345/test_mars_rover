@@ -33,21 +33,22 @@ class Rover {
 
     // move the Rover across the Plateau
     _moveRover() {
+        // replacing if/else with key-value in object
         const move = {
             "N": () => this.position.y = Number(this.position.y) + 1,
             "E": () => this.position.x = Number(this.position.x) + 1,
             "S": () => this.position.y = Number(this.position.y) - 1,
             "W": () => this.position.x = Number(this.position.x) - 1,
         };
-        move[this.position.cardinalPoint]();
+        move[this.position.direction_cardinal_compass]();
     }
 
     // change the direction of the Rover
     #changeDirection(direction) {
         if (direction === 'L') {
-            this.position.cardinalPoint = this.#changeDirectionForLeft(this.position.cardinalPoint)
+            this.position.direction_cardinal_compass = this.#changeDirectionForLeft(this.position.direction_cardinal_compass)
         } else {
-            this.position.cardinalPoint = this.#changeDirectionForRight(this.position.cardinalPoint)
+            this.position.direction_cardinal_compass = this.#changeDirectionForRight(this.position.direction_cardinal_compass)
         }
     }
 
@@ -73,10 +74,12 @@ class Rover {
         return leftPosition[direction];
     }
 
+    // Save rover on BD
     async saveRover() {
         try {
             let rover = await RoverModel.findOne({where: {name: this.name}});
 
+            // if rover not found then register
             if(!rover) {
                 rover = await RoverModel.create({
                     name: this.name,
@@ -84,6 +87,7 @@ class Rover {
             }
             this.id = rover.dataValues.id
             
+            // save the log position initial 
             await this.#saveLog(rover.dataValues.id)
 
             return new Promise((resolve, reject) => {
@@ -97,11 +101,12 @@ class Rover {
             console.log(error)
         }
     }
+    // method for save log
     async #saveLog(rover_id) {
         return LogDirection.create({
             position_x: this.position.x,
             position_y: this.position.y,
-            direction_cardinal_compass: this.position.cardinalPoint,
+            direction_cardinal_compass: this.position.direction_cardinal_compass,
             rover_id: rover_id
         });
     }
