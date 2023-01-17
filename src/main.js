@@ -16,13 +16,16 @@ async function main() {
 
         const [x, y, z] = landingPosition.split(' ');
 
-        let rover = new Rover(rovers[i], plateauSize.split('').map(Number), {x: x, y: y, direction_cardinal_compass: z}, instrution.split(''))
+        let rover = new Rover(rovers[i], plateauSize.split(' ').map(Number), {x: Number(x), y: Number(y), direction_cardinal_compass: z}, instrution.split(''))
 
         await rover.saveRover();
 
         const positionEnd = await rover._startCommand();
 
-        console.log('Final Position', positionEnd.x, positionEnd.y, positionEnd.direction_cardinal_compass);
+        if(positionEnd) {
+            console.log('Final Position', positionEnd.x, positionEnd.y, positionEnd.direction_cardinal_compass);
+        }
+
         console.log('\n')
     }
 

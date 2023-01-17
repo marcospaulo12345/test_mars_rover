@@ -20,6 +20,10 @@ class Rover {
             } else {
                 this._moveRover();
             }
+            if((this.position.x > (this.plateau[0] - 1) || this.position.x < 0) || (this.position.y > (this.plateau[1] - 1) || this.position.y < 0)) {
+                console.log('Rover out of Plateau :(');
+                return;
+            }
 
             await this.#saveLog(this.id);
         }
@@ -35,10 +39,10 @@ class Rover {
     _moveRover() {
         // replacing if/else with key-value in object
         const move = {
-            "N": () => this.position.y = Number(this.position.y) + 1,
-            "E": () => this.position.x = Number(this.position.x) + 1,
-            "S": () => this.position.y = Number(this.position.y) - 1,
-            "W": () => this.position.x = Number(this.position.x) - 1,
+            "N": () => this.position.y = this.position.y + 1,
+            "E": () => this.position.x = this.position.x + 1,
+            "S": () => this.position.y = this.position.y - 1,
+            "W": () => this.position.x = this.position.x - 1,
         };
         move[this.position.direction_cardinal_compass]();
     }
